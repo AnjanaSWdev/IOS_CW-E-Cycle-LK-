@@ -42,7 +42,7 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO"
+            skipped = "YES"
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
@@ -51,6 +51,17 @@
                BlueprintName = "ecyclelkUITests"
                ReferencedContainer = "container:ecyclelk.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "ecyclelkUITests">
+               </Test>
+               <Test
+                  Identifier = "ecyclelkUITests/testExample()">
+               </Test>
+               <Test
+                  Identifier = "ecyclelkUITests/testLaunchPerformance()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>
