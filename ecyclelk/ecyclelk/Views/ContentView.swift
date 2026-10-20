@@ -6,19 +6,17 @@
 //
 
 import SwiftUI
-import CoreData
-
-
-import SwiftUI
+internal import CoreData
 
 struct ContentView: View {
     var body: some View {
-        Text("Welcome to E-Cycle LK!")
-            .padding()
+        ItemsView(
+            viewModel: ItemsViewModel(
+                service: CoreDataItemsService(
+                    context: PersistenceController.shared.container.viewContext
+                )
+            )
+        )
     }
-}
-
-#Preview {
-    ContentView()
 }
 
