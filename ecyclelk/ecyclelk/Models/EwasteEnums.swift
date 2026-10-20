@@ -17,7 +17,7 @@ enum ItemCategory: String, CaseIterable, Identifiable {
     case printers = "printers"
     case televisions = "televisions"
     case cameras = "cameras"
-    case electronicAccessories = "electronicAccessories"
+    case accessories = "accessories"
 
     /// Human-readable name displayed in the UI.
     var displayName: String {
@@ -36,13 +36,13 @@ enum ItemCategory: String, CaseIterable, Identifiable {
             return "Televisions"
         case .cameras:
             return "Cameras"
-        case .electronicAccessories:
-            return "Electronic accessories"
+        case .accessories:
+            return "accessories"
         }
     }
 
     /// Estimated default weight in kilograms.
-    var defaultWeight: Double {
+    var defaultWeightKg: Double {
         switch self {
         case .mobilePhones:
             return 0.2
@@ -58,7 +58,7 @@ enum ItemCategory: String, CaseIterable, Identifiable {
             return 8.0
         case .cameras:
             return 0.5
-        case .electronicAccessories:
+        case .accessories:
             return 0.2
         }
     }
