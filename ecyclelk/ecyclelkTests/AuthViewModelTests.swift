@@ -89,4 +89,10 @@ struct AuthViewModelTests {
         viewModel.signOut()
         #expect(viewModel.state == .signedOut)
     }
+    
+    @Test func initialsUseFirstLettersOfName() {
+        #expect(AuthUser(uid: "1", email: "a@b.com", name: "amaya perera").initials == "AP")
+        #expect(AuthUser(uid: "1", email: "zed@b.com", name: "").initials == "Z")
+        #expect(AuthUser(uid: "1", email: "a@b.com", name: "Madonna").initials == "M")
+    }
 }
