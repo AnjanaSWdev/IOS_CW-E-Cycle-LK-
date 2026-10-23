@@ -8,58 +8,57 @@
 import SwiftUI
 internal import CoreData
 
-struct MainTabView: View{
-    
-    let user: AuthUser
-    let onSignOut: () -> Void
+struct MainTabView: View {
+    @State private var session: AppSession
     @State private var itemsViewModel: ItemsViewModel
-        
-    init(user: AuthUser, onSignOut: @escaping () -> Void){
-        self.user = user
-        self.onSignOut = onSignOut
-        let context = PersistenceController.shared.container.viewContext; _itemsViewModel = State(initialValue: ItemsViewModel(service: CoreDataItemsService(context: context), ownerUID: user.uid))
+
+    init(user: AuthUser, lock: AppLockViewModel, onSignOut: @escaping () -> Void) {
+        _session = State(initialValue: AppSession(user: user, lock: lock, onSignOut: onSignOut))
+        let context = PersistenceController.shared.container.viewContext
+        _itemsViewModel = State(initialValue: ItemsViewModel(
+            service: CoreDataItemsService(context: context),
+            ownerUID: user.uid
+        ))
     }
-    
-    var body: some View{
-        
-        TabView{
-            Tab("Home", systemImage: "house"){
-                HomePlaceholderView(user: user, onSignOut: onSignOut)
+
+    var body: some View {
+        TabView {
+            Tab("Home", systemImage: "house") {
+                HomePlaceholderView()
             }
-            Tab("My items", systemImage: "shippingbox"){
+            Tab("My items", systemImage: "shippingbox") {
                 ItemsView(viewModel: itemsViewModel)
             }
-            Tab("Centres", systemImage: "mapping.and.eclipse"){
-                ComingSoonView(title: "Centers")
+            Tab("Centres", systemImage: "mappin.and.ellipse") {
+                ComingSoonView(title: "Centres")
             }
-            Tab("Plans", systemImage: "calendar"){
+            Tab("Plans", systemImage: "calendar") {
                 ComingSoonView(title: "Plans")
             }
-            Tab("History", systemImage: "clock.arrow.circlepath"){
+            Tab("History", systemImage: "clock.arrow.circlepath") {
                 ComingSoonView(title: "History")
             }
         }
         .tint(.ecGreen)
+        .environment(session)
     }
 }
 
-struct HomePlaceholderView: View{
-    
-    let user: AuthUser
-    let onSignOut: () -> Void
-    
-    var body: some View{
-        VStack(spacing: 16){
-            Text("Welcome back, \(user.name.isEmpty ? user.email : user.name)")
+/// Temporary Home screen until the dashboard is built.
+struct HomePlaceholderView: View {
+    @Environment(AppSession.self) private var session
+
+    var body: some View {
+        NavigationStack {
+            Text("Welcome back, \(session.user.name.isEmpty ? session.user.email : session.user.name)")
                 .font(.title2.bold())
                 .multilineTextAlignment(.center)
-            Button("Sign out", action: onSignOut)
-                .buttonStyle(.borderedProminent)
-                .tint(.ecGreen)
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.ecBackground)
+                .navigationBarTitleDisplayMode(.inline)
+                .ecToolbar()
         }
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.ecBackground)
     }
 }
 
