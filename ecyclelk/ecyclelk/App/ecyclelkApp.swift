@@ -5,29 +5,27 @@
 //  Created by student2 on 2026-10-18.
 //
 
+
+
 import SwiftUI
 internal import CoreData
 import FirebaseCore
-import FirebaseFirestore
-import FirebaseAuth
-
-class AppDelegate: NSObject, UIApplicationDelegate {
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-    FirebaseApp.configure()
-    return true
-  }
-}
-
 
 @main
 struct ecyclelkApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     let persistenceController = PersistenceController.shared
+    @State private var auth: AuthViewModel
+
+    init() {
+        // Firebase must be configured BEFORE anything touches Firebase Auth,
+        // so the view model is created here after configure().
+        FirebaseApp.configure()
+        _auth = State(initialValue: AuthViewModel(service: FirebaseAuthService()))
+    }
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView(auth: auth)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
