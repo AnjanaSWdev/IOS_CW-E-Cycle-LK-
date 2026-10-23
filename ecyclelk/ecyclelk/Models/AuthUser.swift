@@ -14,3 +14,15 @@ struct AuthUser: Equatable{
     let name : String;
     
 }
+
+extension AuthUser {
+    /// "Amaya Perera" -> "AP", "Madonna" -> "M", no name -> first letter of email.
+    var initials: String {
+        let words = name.trimmingCharacters(in: .whitespacesAndNewlines)
+            .split(separator: " ")
+            .prefix(2)
+        let letters = words.compactMap { $0.first }.map(String.init).joined()
+        if !letters.isEmpty { return letters.uppercased() }
+        return String(email.prefix(1)).uppercased()
+    }
+}
