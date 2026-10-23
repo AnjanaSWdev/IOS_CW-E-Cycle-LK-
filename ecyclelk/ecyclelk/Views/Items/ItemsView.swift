@@ -56,6 +56,7 @@ struct ItemsView: View {
             .scrollContentBackground(.hidden)
             .background(Color.ecBackground)
             .navigationTitle("Saved items")
+            .ecToolbar()
             .navigationDestination(for: ItemRecord.self) { item in
                 DisposalGuideView(item: item)
             }
