@@ -10,6 +10,7 @@
 import SwiftUI
 internal import CoreData
 import FirebaseCore
+import UserNotifications
 
 @main
 struct ecyclelkApp: App {
@@ -21,6 +22,7 @@ struct ecyclelkApp: App {
         // Firebase must be configured BEFORE anything touches Firebase Auth,
         // so the view model is created here after configure().
         FirebaseApp.configure()
+        UNUserNotificationCenter.current().delegate = NotificationPresenter.shared
         _auth = State(initialValue: AuthViewModel(service: FirebaseAuthService()))
         _lock = State(initialValue: AppLockViewModel(biometrics: LocalAuthBiometrics()))
     }
