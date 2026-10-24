@@ -11,12 +11,19 @@ internal import CoreData
 struct MainTabView: View {
     @State private var session: AppSession
     @State private var itemsViewModel: ItemsViewModel
+    @State private var plansViewModel: PlansViewModel
 
     init(user: AuthUser, lock: AppLockViewModel, onSignOut: @escaping () -> Void) {
         _session = State(initialValue: AppSession(user: user, lock: lock, onSignOut: onSignOut))
         let context = PersistenceController.shared.container.viewContext
         _itemsViewModel = State(initialValue: ItemsViewModel(
             service: CoreDataItemsService(context: context),
+            ownerUID: user.uid
+        ))
+        _plansViewModel = State(initialValue: PlansViewModel(
+            plansService: CoreDataPlansService(context: context),
+            itemsService: CoreDataItemsService(context: context),
+            reminders: UserNotificationScheduler(),
             ownerUID: user.uid
         ))
     }
@@ -33,7 +40,7 @@ struct MainTabView: View {
                 ComingSoonView(title: "Centres")
             }
             Tab("Plans", systemImage: "calendar") {
-                ComingSoonView(title: "Plans")
+                PlansView(viewModel: plansViewModel)
             }
             Tab("History", systemImage: "clock.arrow.circlepath") {
                 ComingSoonView(title: "History")
