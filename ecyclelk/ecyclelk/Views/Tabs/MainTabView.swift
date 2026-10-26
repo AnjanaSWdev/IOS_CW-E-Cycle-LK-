@@ -18,6 +18,7 @@ struct MainTabView: View {
     @State private var itemsViewModel: ItemsViewModel
     @State private var plansViewModel: PlansViewModel
     @State private var impactViewModel: ImpactViewModel
+    @State private var centresViewModel: CentresViewModel
 
     init(user: AuthUser, lock: AppLockViewModel, onSignOut: @escaping () -> Void) {
         _session = State(initialValue: AppSession(user: user, lock: lock, onSignOut: onSignOut))
@@ -31,12 +32,17 @@ struct MainTabView: View {
             plansService: plansService,
             itemsService: itemsService,
             reminders: UserNotificationScheduler(),
+            centresProvider: CatalogCentresProvider(catalog: BundledCentresCatalog()),
             ownerUID: user.uid
         ))
         _impactViewModel = State(initialValue: ImpactViewModel(
             items: itemsService,
             plans: plansService,
             ownerUID: user.uid
+        ))
+        _centresViewModel = State(initialValue: CentresViewModel(
+            catalog: BundledCentresCatalog(),
+            location: LocationService()
         ))
     }
 
@@ -51,7 +57,7 @@ struct MainTabView: View {
                 ItemsView(viewModel: itemsViewModel)
             }
             Tab("Centres", systemImage: "mappin.and.ellipse", value: AppTab.centres) {
-                ComingSoonView(title: "Centres")
+                CentresView(viewModel: centresViewModel)
             }
             Tab("Plans", systemImage: "calendar", value: AppTab.plans) {
                 PlansView(viewModel: plansViewModel)
@@ -65,6 +71,7 @@ struct MainTabView: View {
     }
 }
 
+/// Placeholder for screens that are not built yet.
 struct ComingSoonView: View {
     let title: String
 
