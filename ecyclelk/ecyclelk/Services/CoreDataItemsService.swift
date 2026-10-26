@@ -14,7 +14,7 @@ import Foundation
 /// code generation. Optionality quirks of the generated properties are
 /// handled with `as Type?` casts in `makeRecord`.
 @MainActor
-final class CoreDataItemsService: ItemsServiceProtocol {
+final class CoreDataItemsService: ItemsServiceProtocol, AllItemsProviding {
     private let context: NSManagedObjectContext
 
     init(context: NSManagedObjectContext) {
@@ -29,6 +29,13 @@ final class CoreDataItemsService: ItemsServiceProtocol {
             format: "ownerUID == %@ AND status != %@",
             ownerUID, ItemStatus.recycled.rawValue
         )
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \EwasteItem.dateAdded, ascending: false)]
+        return try context.fetch(request).compactMap(makeRecord)
+    }
+    
+    func fetchAllItems(ownerUID: String) throws -> [ItemRecord] {
+        let request = NSFetchRequest<EwasteItem>(entityName: "EwasteItem")
+        request.predicate = NSPredicate(format: "ownerUID == %@", ownerUID)
         request.sortDescriptors = [NSSortDescriptor(keyPath: \EwasteItem.dateAdded, ascending: false)]
         return try context.fetch(request).compactMap(makeRecord)
     }
@@ -109,7 +116,9 @@ final class CoreDataItemsService: ItemsServiceProtocol {
             notes: (object.notes as String?) ?? "",
             weightKg: object.weightKg,
             dateAdded: (object.dateAdded as Date?) ?? Date(),
-            status: ItemStatus(rawValue: (object.status as String?) ?? "") ?? .saved
+            status: ItemStatus(rawValue: (object.status as String?) ?? "") ?? .saved,
+            recycledDate: object.recycledDate,
+            centreName: object.plan?.centreName
         )
     }
 }

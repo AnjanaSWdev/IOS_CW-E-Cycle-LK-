@@ -28,7 +28,7 @@
         <attribute name="completedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="notificationID" optional="YES" attributeType="String"/>
-        <attribute name="ownerUID" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="ownerUID" attributeType="String"/>
         <attribute name="planType" attributeType="String"/>
         <attribute name="reminderEnabled" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="reminderMinutesBefore" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>

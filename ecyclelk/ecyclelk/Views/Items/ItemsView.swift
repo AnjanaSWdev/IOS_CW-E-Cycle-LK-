@@ -61,7 +61,7 @@ struct ItemsView: View {
                 DisposalGuideView(item: item)
             }
         }
-        .task { viewModel.load() }
+        .onAppear { viewModel.load() }
         .sheet(item: $formTarget) { target in
             switch target {
             case .add:
