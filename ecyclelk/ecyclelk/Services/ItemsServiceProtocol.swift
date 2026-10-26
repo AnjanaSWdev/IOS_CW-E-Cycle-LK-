@@ -26,3 +26,9 @@ enum ItemsServiceError: LocalizedError {
         }
     }
 }
+
+/// Every item including recycled ones. Used by History and the Home dashboard.
+@MainActor
+protocol AllItemsProviding {
+    func fetchAllItems(ownerUID: String) throws -> [ItemRecord]
+}

@@ -16,4 +16,6 @@ struct ItemRecord: Identifiable, Hashable {
     var weightKg: Double
     var dateAdded: Date
     var status: ItemStatus
+    var recycledDate: Date? = nil
+    var centreName: String? = nil
 }
