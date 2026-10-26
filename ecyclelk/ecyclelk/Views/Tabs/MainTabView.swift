@@ -32,6 +32,7 @@ struct MainTabView: View {
             plansService: plansService,
             itemsService: itemsService,
             reminders: UserNotificationScheduler(),
+            centresProvider: CatalogCentresProvider(catalog: BundledCentresCatalog()),
             ownerUID: user.uid
         ))
         _impactViewModel = State(initialValue: ImpactViewModel(
