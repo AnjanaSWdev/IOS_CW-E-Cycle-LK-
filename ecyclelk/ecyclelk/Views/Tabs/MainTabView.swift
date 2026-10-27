@@ -23,6 +23,7 @@ struct MainTabView: View {
     @State private var communityViewModel: CommunityViewModel
     @State private var showsScan = false
     @State private var scanViewModel: ScanViewModel
+    @State private var geofenceViewModel: GeofenceViewModel
 
     init(user: AuthUser, lock: AppLockViewModel, onSignOut: @escaping () -> Void) {
         _session = State(initialValue: AppSession(user: user, lock: lock, onSignOut: onSignOut))
@@ -43,9 +44,23 @@ struct MainTabView: View {
             plans: plansService,
             ownerUID: user.uid
         ))
+        let locationService = LocationService()
+
         _centresViewModel = State(initialValue: CentresViewModel(
             catalog: BundledCentresCatalog(),
-            location: LocationService()
+            location: locationService
+        ))
+
+        _geofenceViewModel = State(initialValue: GeofenceViewModel(
+            service: CoreLocationGeofenceService(),
+            notifier: CentreAlertNotifier(),
+            store: UserDefaultsGeofenceStore(),
+            items: itemsService,
+            catalog: BundledCentresCatalog(),
+            location: locationService,
+            ownerUID: user.uid,
+            now: { Date() },
+            cooldown: GeofenceViewModel.defaultCooldown
         ))
         _communityViewModel = State(initialValue: CommunityViewModel(
             service: FirestoreCommunityService(),
@@ -73,7 +88,7 @@ struct MainTabView: View {
                 ItemsView(viewModel: itemsViewModel)
             }
             Tab("Centres", systemImage: "mappin.and.ellipse", value: AppTab.centres) {
-                CentresView(viewModel: centresViewModel)
+                CentresView(viewModel: centresViewModel, geofence: geofenceViewModel)
             }
             Tab("Plans", systemImage: "calendar", value: AppTab.plans) {
                 PlansView(viewModel: plansViewModel)
@@ -84,6 +99,8 @@ struct MainTabView: View {
         }
         .tint(.ecGreen)
         .environment(session)
+        .task { geofenceViewModel.refresh() }
+        .onChange(of: selectedTab) { _, _ in geofenceViewModel.refresh() }
         .fullScreenCover(isPresented: $showsCommunity) {
             CommunityView(
                 viewModel: communityViewModel,
@@ -103,6 +120,7 @@ struct MainTabView: View {
                     showsScan = false
                     itemsViewModel.load()
                     impactViewModel.load()
+                    geofenceViewModel.refresh()
                     selectedTab = .items
                 }
             )
@@ -114,6 +132,7 @@ struct MainTabView: View {
                 itemsViewModel.load()
                 plansViewModel.load()
                 impactViewModel.load()
+                geofenceViewModel.refresh()
             }
         }
     }
