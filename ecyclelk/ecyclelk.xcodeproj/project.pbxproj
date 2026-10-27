@@ -409,6 +409,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "E-Cycle LK uses the camera to recognise your old device and suggest its category.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "E-Cycle LK uses your location to show the recycling centres closest to you.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -441,6 +442,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "E-Cycle LK uses the camera to recognise your old device and suggest its category.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "E-Cycle LK uses your location to show the recycling centres closest to you.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

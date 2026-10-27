@@ -14,6 +14,7 @@ struct HomeView: View {
     let onAddItem: () -> Void
     let onFindCentre: () -> Void
     let onOpenCommunity: () -> Void
+    let onOpenScan: () -> Void
 
     private var firstName: String {
         session.user.name.split(separator: " ").first.map(String.init) ?? ""
@@ -67,8 +68,11 @@ struct HomeView: View {
                     ViewThatFits(in: .horizontal) {
                         HStack(spacing: 12) { addItemButton; findCentreButton }
                         VStack(spacing: 12) { addItemButton; findCentreButton }
+                        
+                        
                     }
-
+                    
+                    scanButton
                     communityCard
                 }
                 .padding(16)
@@ -135,5 +139,15 @@ struct HomeView: View {
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
         .accessibilityHint("Opens the community marketplace")
+    }
+    private var scanButton: some View {
+        Button(action: onOpenScan) {
+            Label("Smart scan", systemImage: "camera.viewfinder")
+                .font(.headline)
+                .foregroundStyle(Color.ecInk)
+                .frame(maxWidth: .infinity, minHeight: 52)
+                .background(Color.ecGreenSoft, in: Capsule())
+        }
+        .accessibilityHint("Take a photo of a device and get a category suggestion")
     }
 }

@@ -21,6 +21,8 @@ struct MainTabView: View {
     @State private var impactViewModel: ImpactViewModel
     @State private var centresViewModel: CentresViewModel
     @State private var communityViewModel: CommunityViewModel
+    @State private var showsScan = false
+    @State private var scanViewModel: ScanViewModel
 
     init(user: AuthUser, lock: AppLockViewModel, onSignOut: @escaping () -> Void) {
         _session = State(initialValue: AppSession(user: user, lock: lock, onSignOut: onSignOut))
@@ -50,6 +52,11 @@ struct MainTabView: View {
             items: itemsService,
             user: user
         ))
+        _scanViewModel = State(initialValue: ScanViewModel(
+            classifier: VisionItemClassifier(),
+            items: itemsService,
+            ownerUID: user.uid
+        ))
     }
 
     var body: some View {
@@ -58,7 +65,9 @@ struct MainTabView: View {
                 HomeView(viewModel: impactViewModel,
                          onAddItem: { selectedTab = .items },
                          onFindCentre: { selectedTab = .centres },
-                         onOpenCommunity: { showsCommunity = true })
+                         onOpenCommunity: { showsCommunity = true },
+                         onOpenScan: { scanViewModel.reset(); showsScan = true })
+                
             }
             Tab("My items", systemImage: "shippingbox", value: AppTab.items) {
                 ItemsView(viewModel: itemsViewModel)
@@ -82,6 +91,19 @@ struct MainTabView: View {
                 onPlanRecycling: {
                     showsCommunity = false
                     selectedTab = .plans
+                }
+            )
+            .tint(.ecGreen)
+        }
+        .fullScreenCover(isPresented: $showsScan) {
+            ScanView(
+                viewModel: scanViewModel,
+                onClose: { showsScan = false },
+                onSaved: {
+                    showsScan = false
+                    itemsViewModel.load()
+                    impactViewModel.load()
+                    selectedTab = .items
                 }
             )
             .tint(.ecGreen)

@@ -27,6 +27,7 @@ struct ItemFormView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var draft: ItemDraft
     @State private var inputMethod: InputMethod = .manual
+    @State private var scanModel = ScanViewModel(classifier: VisionItemClassifier(), items: nil)
 
     init(mode: Mode, onSave: @escaping (ItemDraft) -> Bool) {
         self.mode = mode
@@ -59,7 +60,7 @@ struct ItemFormView: View {
 
                     switch inputMethod {
                     case .manual: manualForm
-                    case .smartScan: smartScanPlaceholder
+                    case .smartScan: smartScanSection
                     }
                 }
                 .padding(16)
@@ -75,7 +76,7 @@ struct ItemFormView: View {
                     Button("Save") {
                         if onSave(draft) { dismiss() }
                     }
-                    .disabled(!draft.isValid || inputMethod == .smartScan)
+                    .disabled(!draft.isValid)
                 }
             }
         }
@@ -139,13 +140,15 @@ struct ItemFormView: View {
         .ecCard()
     }
 
-    private var smartScanPlaceholder: some View {
-        ContentUnavailableView(
-            "Smart scan is coming soon",
-            systemImage: "sparkles",
-            description: Text("Pick a photo and let the app suggest a category. Use Manual entry for now.")
-        )
-        .ecCard()
+    private var smartScanSection: some View {
+        SmartScanSection(viewModel: scanModel) { category, name, condition in
+            // Copy the confirmed result into the form, then show the form so it can be reviewed and saved.
+            selectCategory(category)
+            if draft.name.trimmingCharacters(in: .whitespaces).isEmpty { draft.name = name }
+            draft.condition = condition
+            if draft.notes.isEmpty { draft.notes = "Added with Smart scan" }
+            inputMethod = .manual
+        }
     }
 
     // MARK: - Helpers
