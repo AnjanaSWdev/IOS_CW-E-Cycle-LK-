@@ -23,6 +23,8 @@ struct HistoryView: View {
                              symbol: "shippingbox", tint: Color.ecGreenSoft)
                     StatCard(value: "\(viewModel.stats.itemsRecycled)", title: "Items recycled",
                              symbol: "arrow.3.trianglepath", tint: Color.ecGreenSoft)
+                    StatCard(value: "\(viewModel.stats.itemsRehomed)", title: "Given a second life",
+                             symbol: "arrow.triangle.2.circlepath", tint: Color.ecGreenSoft)
                     StatCard(value: "\(viewModel.stats.completionRatePercent)%", title: "Completion rate",
                              symbol: "checkmark", tint: Color.ecGreenSoft)
 

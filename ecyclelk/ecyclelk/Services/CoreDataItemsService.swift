@@ -14,7 +14,7 @@ import Foundation
 /// code generation. Optionality quirks of the generated properties are
 /// handled with `as Type?` casts in `makeRecord`.
 @MainActor
-final class CoreDataItemsService: ItemsServiceProtocol, AllItemsProviding {
+final class CoreDataItemsService: ItemsServiceProtocol, AllItemsProviding, ItemStatusUpdating{
     private let context: NSManagedObjectContext
 
     init(context: NSManagedObjectContext) {
@@ -26,8 +26,8 @@ final class CoreDataItemsService: ItemsServiceProtocol, AllItemsProviding {
     func fetchItems(ownerUID: String) throws -> [ItemRecord] {
         let request = NSFetchRequest<EwasteItem>(entityName: "EwasteItem")
         request.predicate = NSPredicate(
-            format: "ownerUID == %@ AND status != %@",
-            ownerUID, ItemStatus.recycled.rawValue
+            format: "ownerUID == %@ AND NOT (status IN %@)",
+            ownerUID, [ItemStatus.recycled.rawValue, ItemStatus.rehomed.rawValue] as NSArray
         )
         request.sortDescriptors = [NSSortDescriptor(keyPath: \EwasteItem.dateAdded, ascending: false)]
         return try context.fetch(request).compactMap(makeRecord)
@@ -69,6 +69,13 @@ final class CoreDataItemsService: ItemsServiceProtocol, AllItemsProviding {
     func deleteItem(id: UUID) throws {
         let object = try fetchObject(id: id)
         context.delete(object)
+        try saveContext()
+    }
+    
+    func setStatus(_ status: ItemStatus, forItemWithID id: UUID, on date: Date) throws {
+        let object = try fetchObject(id: id)
+        object.status = status.rawValue
+        object.recycledDate = (status == .recycled || status == .rehomed) ? date : nil
         try saveContext()
     }
 

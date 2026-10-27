@@ -99,6 +99,8 @@ enum ItemStatus: String, CaseIterable, Identifiable {
     case saved = "saved"
     case planned = "planned"
     case recycled = "recycled"
+    case listed = "listed"
+    case rehomed = "rehomed"
 
     /// Human-readable name displayed in the UI.
     var displayName: String {
@@ -109,6 +111,10 @@ enum ItemStatus: String, CaseIterable, Identifiable {
             return "Planned"
         case .recycled:
             return "Recycled"
+        case .listed:
+            return "Listed"
+        case .rehomed: 
+            return "Given away"
         }
     }
 
