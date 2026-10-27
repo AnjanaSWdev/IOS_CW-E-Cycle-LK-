@@ -13,6 +13,7 @@ struct HomeView: View {
     let viewModel: ImpactViewModel
     let onAddItem: () -> Void
     let onFindCentre: () -> Void
+    let onOpenCommunity: () -> Void
 
     private var firstName: String {
         session.user.name.split(separator: " ").first.map(String.init) ?? ""
@@ -67,6 +68,8 @@ struct HomeView: View {
                         HStack(spacing: 12) { addItemButton; findCentreButton }
                         VStack(spacing: 12) { addItemButton; findCentreButton }
                     }
+
+                    communityCard
                 }
                 .padding(16)
             }
@@ -101,5 +104,36 @@ struct HomeView: View {
                 .background(Color.white, in: Capsule())
                 .overlay(Capsule().stroke(Color.black.opacity(0.1)))
         }
+    }
+
+    private var communityCard: some View {
+        Button(action: onOpenCommunity) {
+            HStack(spacing: 14) {
+                Image(systemName: "person.2.fill")
+                    .font(.title3)
+                    .foregroundStyle(Color.ecInk)
+                    .frame(width: 48, height: 48)
+                    .background(Color.ecGreenSoft, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Community")
+                        .font(.headline)
+                        .foregroundStyle(Color.ecInk)
+                    Text("Give working or repairable gadgets a second life, or find one you can fix.")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.ecMuted)
+                        .multilineTextAlignment(.leading)
+                }
+                Spacer(minLength: 8)
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(Color.ecMuted)
+                    .accessibilityHidden(true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .ecCard()
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityHint("Opens the community marketplace")
     }
 }

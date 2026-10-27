@@ -1,0 +1,106 @@
+rules_version = '2';
+
+// E-Cycle LK community rules.
+// Principle: you can only change your own things, and contact details are only visible
+// to the two people involved in a handover.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function listingData(id) {
+      return get(/databases/$(database)/documents/listings/$(id)).data;
+    }
+
+    // ---------------------------------------------------------------
+    // Listings: anyone signed in can browse; only the owner can change them.
+    // ---------------------------------------------------------------
+    match /listings/{listingId} {
+      allow read: if signedIn();
+
+      allow create: if signedIn()
+        && request.resource.data.ownerUID == request.auth.uid
+        && request.resource.data.status == 'open'
+        && request.resource.data.requestCount == 0
+        && request.resource.data.title is string
+        && request.resource.data.title.size() >= 3
+        && request.resource.data.title.size() <= 80
+        && request.resource.data.description is string
+        && request.resource.data.description.size() >= 10
+        && request.resource.data.description.size() <= 600
+        && request.resource.data.mode in ['giveaway', 'sale']
+        && request.resource.data.priceLKR is int
+        && request.resource.data.priceLKR >= 0
+        && request.resource.data.priceLKR <= 1000000
+        && (request.resource.data.mode == 'sale' || request.resource.data.priceLKR == 0)
+        && request.resource.data.condition in ['working', 'needsRepair', 'forParts']
+        && request.resource.data.category in ['mobilePhones', 'laptops', 'batteries', 'monitors',
+                                              'printers', 'televisions', 'cameras', 'accessories']
+        // Damaged or dead batteries are hazardous: they can never be listed.
+        && !(request.resource.data.category == 'batteries' && request.resource.data.condition != 'working');
+
+      allow update: if signedIn() && (
+        // The owner can move the listing through its life cycle.
+        (resource.data.ownerUID == request.auth.uid
+          && request.resource.data.ownerUID == resource.data.ownerUID
+          && request.resource.data.status in ['open', 'reserved', 'completed', 'withdrawn', 'expired'])
+        ||
+        // Anyone else may only add one to the request counter of an open listing (max 15).
+        (resource.data.status == 'open'
+          && resource.data.requestCount < 15
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['requestCount'])
+          && request.resource.data.requestCount == resource.data.requestCount + 1)
+      );
+
+      allow delete: if false;
+    }
+
+    // ---------------------------------------------------------------
+    // Requests: only the owner of the listing and the person who asked can see a request.
+    // The document ID is "<listingID>_<requesterUID>", so each person can ask only once.
+    // ---------------------------------------------------------------
+    match /requests/{requestId} {
+      allow read: if signedIn()
+        && (resource.data.requesterUID == request.auth.uid
+            || resource.data.ownerUID == request.auth.uid);
+
+      allow create: if signedIn()
+        && request.resource.data.requesterUID == request.auth.uid
+        && requestId == request.resource.data.listingID + '_' + request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.message is string
+        && request.resource.data.message.size() >= 10
+        && request.resource.data.message.size() <= 300
+        && request.resource.data.contactPhone is string
+        && request.resource.data.contactPhone.size() <= 20
+        && request.resource.data.ownerUID == listingData(request.resource.data.listingID).ownerUID
+        && request.resource.data.ownerUID != request.auth.uid
+        && listingData(request.resource.data.listingID).status == 'open';
+
+      allow update: if signedIn() && (
+        // The owner accepts, declines, cancels or completes, and may add their contact number.
+        (resource.data.ownerUID == request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'ownerContact'])
+          && request.resource.data.status in ['accepted', 'declined', 'cancelled', 'completed'])
+        ||
+        // The requester can withdraw a request that is still pending.
+        (resource.data.requesterUID == request.auth.uid
+          && resource.data.status == 'pending'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+          && request.resource.data.status == 'withdrawn')
+      );
+
+      allow delete: if false;
+    }
+
+    // ---------------------------------------------------------------
+    // Reports: anyone signed in can report; nobody can read them in the app (check the console).
+    // ---------------------------------------------------------------
+    match /reports/{reportId} {
+      allow create: if signedIn() && request.resource.data.reporterUID == request.auth.uid;
+      allow read, update, delete: if false;
+    }
+  }
+}
