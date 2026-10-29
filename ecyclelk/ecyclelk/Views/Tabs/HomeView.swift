@@ -15,6 +15,7 @@ struct HomeView: View {
     let onFindCentre: () -> Void
     let onOpenCommunity: () -> Void
     let onOpenScan: () -> Void
+    
 
     private var firstName: String {
         session.user.name.split(separator: " ").first.map(String.init) ?? ""
@@ -58,6 +59,7 @@ struct HomeView: View {
                     StatCard(value: two(viewModel.stats.itemsRecycled), title: "Items recycled",
                              subtitle: "\(viewModel.stats.recycledThisMonth) completed this month",
                              symbol: "arrow.3.trianglepath", tint: Color.ecGreenSoft)
+                    
 
                     Text("Quick actions")
                         .font(.title3.bold())

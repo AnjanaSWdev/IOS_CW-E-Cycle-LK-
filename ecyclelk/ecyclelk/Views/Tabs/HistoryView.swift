@@ -10,6 +10,7 @@ import SwiftUI
 /// "History" tab: your recycling impact.
 struct HistoryView: View {
     let viewModel: ImpactViewModel
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
@@ -34,7 +35,11 @@ struct HistoryView: View {
             }
             .background(Color.ecBackground)
             .navigationTitle("Recycling history")
-            .ecToolbar()
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
         }
         .onAppear { viewModel.load() }
     }

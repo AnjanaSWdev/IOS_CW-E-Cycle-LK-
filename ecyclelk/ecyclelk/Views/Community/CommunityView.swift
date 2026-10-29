@@ -14,7 +14,7 @@ struct ListingRoute: Hashable {
 /// Community: give away or sell items that still have life in them, or ask for one you can use or repair.
 struct CommunityView: View {
     @Bindable var viewModel: CommunityViewModel
-    let onClose: () -> Void
+    var onClose: (() -> Void)? = nil
     let onPlanRecycling: () -> Void
 
     @State private var path: [ListingRoute] = []
@@ -39,7 +39,9 @@ struct CommunityView: View {
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Close", action: onClose)
+                    if let onClose {
+                        Button("Close", action: onClose)
+                    }
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button { showsNewListing = true } label: {

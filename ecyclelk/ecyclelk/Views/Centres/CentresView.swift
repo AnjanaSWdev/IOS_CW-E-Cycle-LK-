@@ -11,6 +11,7 @@ import UIKit
 /// "Centres" tab: find where to take your e-waste.
 struct CentresView: View {
     @Bindable var viewModel: CentresViewModel
+    @Bindable var geofence: GeofenceViewModel
  
     @State private var detailCentre: RecyclingCentre?
     @Environment(\.openURL) private var openURL
@@ -49,6 +50,7 @@ struct CentresView: View {
             .pickerStyle(.segmented)
  
             locationBanner
+            CentreAlertsCard(viewModel: geofence)
  
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
