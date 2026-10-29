@@ -16,6 +16,7 @@ final class AppSession {
     let user: AuthUser
     let lock: AppLockViewModel
     private let onSignOut: () -> Void
+    var showsHistory = false
 
     init(user: AuthUser, lock: AppLockViewModel, onSignOut: @escaping () -> Void) {
         self.user = user

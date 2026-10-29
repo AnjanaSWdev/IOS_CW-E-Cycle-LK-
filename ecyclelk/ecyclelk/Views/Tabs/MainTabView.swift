@@ -9,13 +9,12 @@ import SwiftUI
 internal import CoreData
 
 enum AppTab: Hashable {
-    case home, items, centres, plans, history
+    case home, items, centres, plans, history, community
 }
 
 struct MainTabView: View {
     @State private var session: AppSession
     @State private var selectedTab: AppTab = .home
-    @State private var showsCommunity = false
     @State private var itemsViewModel: ItemsViewModel
     @State private var plansViewModel: PlansViewModel
     @State private var impactViewModel: ImpactViewModel
@@ -80,8 +79,9 @@ struct MainTabView: View {
                 HomeView(viewModel: impactViewModel,
                          onAddItem: { selectedTab = .items },
                          onFindCentre: { selectedTab = .centres },
-                         onOpenCommunity: { showsCommunity = true },
+                         onOpenCommunity: { selectedTab = .community },
                          onOpenScan: { scanViewModel.reset(); showsScan = true })
+                
                 
             }
             Tab("My items", systemImage: "shippingbox", value: AppTab.items) {
@@ -93,24 +93,25 @@ struct MainTabView: View {
             Tab("Plans", systemImage: "calendar", value: AppTab.plans) {
                 PlansView(viewModel: plansViewModel)
             }
-            Tab("History", systemImage: "clock.arrow.circlepath", value: AppTab.history) {
-                HistoryView(viewModel: impactViewModel)
+            Tab("Community", systemImage: "person.2", value: AppTab.community) {
+                CommunityView(
+                    viewModel: communityViewModel,
+                    onPlanRecycling: { selectedTab = .plans }
+                )
             }
         }
         .tint(.ecGreen)
         .environment(session)
+        .sheet(isPresented: $session.showsHistory) {
+            HistoryView(viewModel: impactViewModel)
+        }
+        
         .task { geofenceViewModel.refresh() }
-        .onChange(of: selectedTab) { _, _ in geofenceViewModel.refresh() }
-        .fullScreenCover(isPresented: $showsCommunity) {
-            CommunityView(
-                viewModel: communityViewModel,
-                onClose: { showsCommunity = false },
-                onPlanRecycling: {
-                    showsCommunity = false
-                    selectedTab = .plans
-                }
-            )
-            .tint(.ecGreen)
+        .onChange(of: selectedTab) { _, _ in
+            itemsViewModel.load()
+            plansViewModel.load()
+            impactViewModel.load()
+            geofenceViewModel.refresh()
         }
         .fullScreenCover(isPresented: $showsScan) {
             ScanView(
@@ -125,15 +126,6 @@ struct MainTabView: View {
                 }
             )
             .tint(.ecGreen)
-        }
-        .onChange(of: showsCommunity) { _, isShowing in
-            // Listing or handing over an item changes its status, so refresh the other tabs.
-            if !isShowing {
-                itemsViewModel.load()
-                plansViewModel.load()
-                impactViewModel.load()
-                geofenceViewModel.refresh()
-            }
         }
     }
 }
