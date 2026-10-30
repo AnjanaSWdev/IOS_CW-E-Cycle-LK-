@@ -19,6 +19,7 @@ struct ecyclelkApp: App {
     @State private var lock: AppLockViewModel
     
     init() {
+        
         // Firebase must be configured BEFORE anything touches Firebase Auth,
         // so the view model is created here after configure().
         FirebaseApp.configure()

@@ -8,8 +8,8 @@
 import Foundation
 import Observation
 
-/// Who is signed in, plus the app lock and sign-out action.
-/// Shared with every screen through the SwiftUI environment.
+// Who is signed in, plus the app lock and sign-out action.
+
 @MainActor
 @Observable
 final class AppSession {

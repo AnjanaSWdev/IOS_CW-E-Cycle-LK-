@@ -28,7 +28,7 @@ final class PlansViewModel {
     init(plansService: PlansServiceProtocol,
          itemsService: ItemsServiceProtocol,
          reminders: ReminderSchedulerProtocol,
-         centresProvider: CentresProviding = SampleCentresProvider(),
+         centresProvider: CentresProviding,
          ownerUID: String = "local",
          now: @escaping () -> Date = { Date() }) {
         self.plansService = plansService

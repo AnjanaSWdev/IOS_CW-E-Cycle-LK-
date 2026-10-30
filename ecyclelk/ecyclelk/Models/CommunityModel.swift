@@ -7,16 +7,14 @@
 
 import Foundation
 
-// MARK: - Enums
 
-/// Is the item free or for sale?
 enum ListingMode: String, CaseIterable, Identifiable {
     case giveaway, sale
     var id: String { rawValue }
     var displayName: String { self == .giveaway ? "Give away" : "Sell" }
 }
 
-/// Honest condition labels, the way second-hand platforms use them ("for parts or not working").
+// Honest condition labels, the way second-hand platforms use them ("for parts or not working").
 enum ListingCondition: String, CaseIterable, Identifiable {
     case working, needsRepair, forParts
     var id: String { rawValue }
@@ -76,7 +74,7 @@ enum RequestStatus: String {
     }
 }
 
-/// Why the person wants the item. Helps the owner choose, and keeps repairers and students in the picture.
+
 enum RequestPurpose: String, CaseIterable, Identifiable {
     case useIt, repairIt, forParts, communityProject
     var id: String { rawValue }
@@ -187,7 +185,7 @@ struct Listing: Identifiable, Equatable {
         max(0, Int(now.timeIntervalSince(createdAt) / 86_400))
     }
 
-    /// After a week with no requests we suggest the responsible fallback: recycle it.
+    // After a week with no requests we suggest the responsible fallback: recycle it.
     func shouldSuggestRecycling(now: Date) -> Bool {
         status == .open && requestCount == 0 && ageInDays(now: now) >= Listing.recyclingNudgeAfterDays
     }
@@ -202,7 +200,7 @@ struct Listing: Identifiable, Equatable {
     }
 }
 
-/// Reasons a person cannot request a listing.
+// Reasons a person cannot request a listing.
 enum RequestBlock: Equatable {
     case ownListing, notOpen, expired, alreadyRequested, full
 
@@ -231,6 +229,7 @@ struct ListingRequest: Identifiable, Equatable {
     var message: String
     var contactPhone: String
     var status: RequestStatus
+    
     /// Filled in by the owner when they accept. Only the owner and this requester can read it.
     var ownerContact: String
     var createdAt: Date
@@ -240,10 +239,10 @@ struct ListingRequest: Identifiable, Equatable {
     }
 }
 
-// MARK: - People
+
 
 extension AuthUser {
-    /// What other users see: first name and last initial ("Anjana P."). Never the email.
+    // What other users see: first name and last initial ("Anjana P."). Never the email.
     var publicName: String {
         let parts = name.split(separator: " ")
         guard let first = parts.first else { return "Community member" }

@@ -8,7 +8,7 @@
 import Foundation
 import CoreLocation
  
-/// Who runs the place. Read from the "type" column of centres.csv.
+// Who runs the place. Read from the "type" column of centres.csv.
 enum CentreKind: String, Hashable {
     case ekunuPublicDropoff = "ekunu_public_dropoff"
     case ceaLicensedCollector = "cea_licensed_collector"
@@ -23,7 +23,7 @@ enum CentreKind: String, Hashable {
     }
 }
  
-/// One recycling centre, as read from centres.csv.
+// One recycling centre, as read from centres.csv.
 struct RecyclingCentre: Identifiable, Hashable {
     let id: String
     let name: String
@@ -35,7 +35,7 @@ struct RecyclingCentre: Identifiable, Hashable {
     let phone: String
     let openingHours: String
     let acceptedCategories: Set<ItemCategory>
-    /// True when the centre should be phoned first (mostly business-focused collectors).
+    // True when the centre should be phoned first (mostly business-focused collectors).
     let needsConfirmation: Bool
     let source: String
     let notes: String

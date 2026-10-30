@@ -17,12 +17,12 @@ struct LockView: View{
                 .font(.system(size: 56))
                 .foregroundStyle(Color.ecGreen)
                 .accessibilityHidden(true)
-            Text("E-Cylce LK is blocked")
+            Text("E-Cycle LK is locked")
                 .font(.title2.bold())
                 .foregroundStyle(Color.ecInk)
                 .accessibilityAddTraits(.isHeader)
             if lock.lastAttemptFailed {
-                Text("Couldn't verifiy it's you. Try again.")
+                Text("Couldn't verify it's you. Try again.")
                     .font(.subheadline)
                     .foregroundStyle(.red)
             }

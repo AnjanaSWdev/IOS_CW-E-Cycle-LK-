@@ -23,7 +23,6 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section("Account") {
-                    Section {
                         HStack(spacing: 14) {
                             AvatarView(initials: user.initials, size: 56)
                             VStack(alignment: .leading, spacing: 2) {
@@ -32,7 +31,7 @@ struct SettingsView: View {
                             }
                         }
                         .accessibilityElement(children: .combine)
-                    }
+                    
                 }
 
                 Section {
