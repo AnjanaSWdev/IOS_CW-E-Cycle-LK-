@@ -8,7 +8,7 @@
 import Foundation
 
 extension ItemCategory {
-    /// Devices that may still hold the owner's accounts, photos or messages.
+    // Devices that may still hold the owner's accounts, photos or messages.
     var storesPersonalData: Bool {
         switch self {
         case .mobilePhones, .laptops, .cameras, .televisions: return true
@@ -84,7 +84,7 @@ struct ListingDraft: Equatable {
 
     var firstProblem: Problem? { problems().first }
 
-    /// Fills the form from an item in My items.
+    // Fills the form from an item in My items.
     mutating func apply(_ item: ItemRecord) {
         sourceItemID = item.id
         title = item.name
@@ -127,7 +127,7 @@ struct RequestDraft: Equatable {
 
     var firstProblem: Problem? { problems().first }
 
-    /// Digits with an optional leading "+". Nil when it does not look like a phone number.
+    // Digits with an optional leading "+". Nil when it does not look like a phone number.
     static func normalizedPhone(_ raw: String) -> String? {
         let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         let digits = trimmed.filter(\.isNumber)

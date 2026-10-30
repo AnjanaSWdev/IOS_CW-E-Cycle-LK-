@@ -16,11 +16,7 @@ protocol CentreAlertNotifying {
 /// Local notification. (The lecturer confirmed local notifications count as push notifications.)
 @MainActor
 struct CentreAlertNotifier: CentreAlertNotifying {
-    init() {
-        // Without a delegate iOS hides notifications while the app is open. Only set it if nobody has.
-        let center = UNUserNotificationCenter.current()
-        if center.delegate == nil { center.delegate = ForegroundBannerDelegate.shared }
-    }
+  
 
     func sendAlert(centreID: String, centreName: String, categories: [ItemCategory]) async {
         let center = UNUserNotificationCenter.current()
@@ -41,15 +37,5 @@ struct CentreAlertNotifier: CentreAlertNotifying {
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
         let request = UNNotificationRequest(identifier: "centre-alert-\(centreID)", content: content, trigger: trigger)
         try? await center.add(request)
-    }
-}
-
-/// Shows alerts as banners even while the app is open.
-final class ForegroundBannerDelegate: NSObject, UNUserNotificationCenterDelegate {
-    static let shared = ForegroundBannerDelegate()
-
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
-        [.banner, .list, .sound]
     }
 }

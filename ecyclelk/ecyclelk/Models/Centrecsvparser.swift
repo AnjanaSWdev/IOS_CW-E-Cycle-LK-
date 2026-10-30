@@ -7,14 +7,15 @@
 
 import Foundation
  
-/// Reads centres.csv. Columns are found by their header names, so column order does not matter.
+// Reads centres.csv. Columns are found by their header names.
+
 enum CentreCSVParser {
  
-    /// Splits CSV text into rows of fields. Handles quoted fields, commas and line breaks inside
-    /// quotes, doubled quotes ("") and both \n and \r\n line endings.
+    // Splits CSV text into rows of fields. Handles quoted fields, commas and line breaks inside
+    // quotes, doubled quotes ("") and both \n and \r\n line endings.
     static func parseRows(_ text: String) -> [[String]] {
         var scalars = Array(text.unicodeScalars)
-        if scalars.first == "\u{FEFF}" { scalars.removeFirst() }   // byte-order mark from Excel/Numbers
+        if scalars.first == "\u{FEFF}" { scalars.removeFirst() }
  
         var rows: [[String]] = []
         var row: [String] = []

@@ -13,11 +13,10 @@ struct DisposalStep: Identifiable, Hashable {
     var id: String { title }
 }
 
-/// Static, bundled disposal guidance (no network, no Core Data).
-/// This is general guidance only, not professional hazardous-material advice.
+
 struct DisposalGuide {
     let steps: [DisposalStep]
-    /// Shown in the orange "Handle with care" card. `nil` means no warning.
+    
     let warning: String?
 
     static let disclaimer =

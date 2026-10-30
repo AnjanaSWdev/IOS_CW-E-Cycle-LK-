@@ -29,7 +29,7 @@ enum PlanStatus: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
-/// A plain value copy of one recycling plan (same idea as ItemRecord).
+// A plain value copy of one recycling plan (same idea as ItemRecord).
 struct PlanRecord: Identifiable, Hashable {
     let id: UUID
     var title: String
@@ -48,7 +48,7 @@ struct PlanRecord: Identifiable, Hashable {
     var itemCount: Int { itemIDs.count }
 }
 
-/// What the "New plan" form collects.
+// What the "New plan" form collects.
 struct PlanDraft: Equatable {
     var type: PlanType = .dropOff
     var itemIDs: Set<UUID> = []
@@ -56,7 +56,7 @@ struct PlanDraft: Equatable {
     var centreName: String?
     var start: Date
     var reminderEnabled = true
-    /// Default is one day before, as in the prototype.
+    // Default is one day before, as in the prototype.
     var reminderMinutesBefore = 1440
 
     enum Problem: LocalizedError, Equatable {
@@ -81,7 +81,7 @@ struct PlanDraft: Equatable {
         reminderEnabled ? start.addingTimeInterval(-Double(reminderMinutesBefore) * 60) : nil
     }
 
-    /// The first thing wrong with this draft, or nil if it is fine to save.
+    // The first thing wrong with this draft, or nil if it is fine to save.
     func firstProblem(now: Date = Date()) -> Problem? {
         if itemIDs.isEmpty { return .noItems }
         if type == .dropOff && centreID == nil { return .noCentre }

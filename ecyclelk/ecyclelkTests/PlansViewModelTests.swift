@@ -48,6 +48,15 @@ private final class FakeItemsForPlans: ItemsServiceProtocol {
 }
 
 @MainActor
+private struct FakeCentresProvider: CentresProviding {
+    func fetchCentres() async throws -> [CentreOption] {
+        [CentreOption(id: "ekunu-01",
+                      name: "eKunu Collection Point - Kandy",
+                      address: "Kandy")]
+    }
+}
+
+@MainActor
 private final class FakeReminders: ReminderSchedulerProtocol {
     var authorized = true
     private(set) var scheduledIDs: [String] = []
@@ -71,7 +80,7 @@ struct PlansViewModelTests {
         let reminders = FakeReminders()
         let now = self.now
         let viewModel = PlansViewModel(plansService: plans, itemsService: items,
-                                       reminders: reminders, now: { now })
+                                       reminders: reminders,centresProvider: FakeCentresProvider(), now: { now })
         return (viewModel, plans, reminders, items)
     }
 

@@ -16,7 +16,7 @@ struct AuthUser: Equatable{
 }
 
 extension AuthUser {
-    /// "Amaya Perera" -> "AP", "Madonna" -> "M", no name -> first letter of email.
+    
     var initials: String {
         let words = name.trimmingCharacters(in: .whitespacesAndNewlines)
             .split(separator: " ")

@@ -14,7 +14,6 @@ struct ItemDraft: Equatable {
     var notes: String
     var weightKg: Double
 
-    /// A blank draft for the "Add item" form.
     init(
         name: String = "",
         category: ItemCategory = .mobilePhones,
@@ -29,7 +28,7 @@ struct ItemDraft: Equatable {
         self.weightKg = weightKg ?? category.defaultWeightKg
     }
 
-    /// A draft pre-filled from an existing item, for the "Edit item" form.
+ 
     init(record: ItemRecord) {
         self.name = record.name
         self.category = record.category
